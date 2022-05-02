@@ -40,8 +40,8 @@ rulesApply _ = id
 reflect :: Phrase -> Phrase
 reflect [] = []
 reflect (p : ps)
-  | isJust rr = r : reflect ps -- p not in reflections
-  | otherwise = p : reflect ps -- p in reflections
+  | isJust rr = r : reflect ps -- p in reflections
+  | otherwise = p : reflect ps -- p not in reflections
   where
     rr = lookup p reflections
     Just r = rr
