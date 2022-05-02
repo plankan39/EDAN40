@@ -1,10 +1,10 @@
 module Chatterbot where
 
 import Data.Char
+import qualified Data.Maybe
 import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
 import Utilities
-import qualified Data.Maybe
 
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do
@@ -171,11 +171,17 @@ transformationApply _ _ _ (_, []) = Nothing
 transformationApply wc f text (matchPattern, substitutePattern)
   | Data.Maybe.isJust mm = Just (substitute wc substitutePattern (f m))
   | otherwise = Nothing
-  where mm = match wc matchPattern text 
-        Just m = mm
+  where
+    mm = match wc matchPattern text
+    Just m = mm
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
-transformationsApply _ _ _ _ = Nothing
+transformationsApply _ _ [] _ = Nothing
+transformationsApply _ _ _ [] = Nothing
+transformationsApply wc f (p : ps) text =
+  orElse
+    (transformationApply wc f text p)
+    (transformationsApply wc f ps text)
 
 {- TO BE WRITTEN -}
