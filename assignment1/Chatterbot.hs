@@ -118,6 +118,7 @@ match _ _ [] = Nothing
 match wc (p : ps) (x :xs)
   | wc == p = orElse (singleWildcardMatch (p : ps) (x :xs)) (longerWildcardMatch (p : ps) (x : xs))
   | p == x = match wc ps xs
+  | otherwise = Nothing
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
