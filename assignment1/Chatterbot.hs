@@ -118,9 +118,6 @@ substitute w (s : ss) r
 -- If first of pattern is wildcard, check for match
 -- If first of pattern is not wildcard, but is same as String first, check rest of string
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
--- Both lists are empty.
--- The pattern list is empty but the other list is not.
--- The pattern list is not empty but the other list is.
 match _ [] [] = Just []
 match _ [] _ = Nothing
 match _ _ [] = Nothing
@@ -137,7 +134,7 @@ singleWildcardMatch [] _ = Nothing
 singleWildcardMatch _ [] = Nothing
 singleWildcardMatch (wc : ps) (x : xs)
   | ps == xs = Just [x]
-  | match wc ps xs /= Nothing = Just [x]
+  | Data.Maybe.isJust (match wc ps xs) = Just [x]
   | otherwise = Nothing
 longerWildcardMatch [] _ = Nothing
 longerWildcardMatch _ [] = Nothing
