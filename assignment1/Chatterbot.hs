@@ -30,8 +30,25 @@ type BotBrain = [(Phrase, [Phrase])]
 --------------------------------------------------------
 
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
-{- TO BE WRITTEN -}
-stateOfMind _ = return id
+stateOfMind bb = do
+  r <- randomIO :: IO Float
+  {- Create a 2D map of ID (nothing) and pick a random selection for that prompt,
+  then create a function where all of those are applied to a function, and apply rules to that
+  Finally apply this function to BotBrain bb and make monad of it
+
+  For example, in
+  [ <-- map works here
+  ("", <-- id is applied to this via map2
+      ["Speak up! I can't hear you."] <-- pick r is applied here via map2
+  ),
+  ("I need *",
+      ["Why do you need * ?",
+       "Would it really help you to get * ?",
+       "Are you sure you need * ?"]),
+  -- ...
+  ]
+  -}
+  return $ rulesApply . map (map2 (id, pick r)) $ bb
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply trans wrds = k
