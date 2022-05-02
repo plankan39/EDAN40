@@ -11,6 +11,7 @@ orElse :: Maybe a -> Maybe a -> Maybe a
 orElse Nothing  x  = x
 orElse (Just a) _  = Just a
 
+{- `id` is the identity function, return the in parameter -}
 try :: (a -> Maybe a) -> a -> a
 try f x = maybe x id (f x)
 
