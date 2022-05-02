@@ -11,9 +11,9 @@ orElse :: Maybe a -> Maybe a -> Maybe a
 orElse Nothing  x  = x
 orElse (Just a) _  = Just a
 
-{- `id` is the identity function, return the in parameter -}
+-- Tries to apply f to x, and f x is nothing return x
 try :: (a -> Maybe a) -> a -> a
-try f x = maybe x id (f x)
+try f x = maybe x id (f x) -- `id` is the identity function, return the in parameter
 
 fix :: Eq a => (a -> a) -> a -> a
 fix f x

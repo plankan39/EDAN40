@@ -112,26 +112,33 @@ substitute w (s : ss) r
 
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
+--
+-- If first of pattern is wildcard, check for match
+-- If first of pattern is not wildcard, but is same as String first, check rest of string
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] _ = Nothing
 match _ _ [] = Nothing
-match wc (p : ps) (x :xs)
-  | wc == p = orElse (singleWildcardMatch (p : ps) (x :xs)) (longerWildcardMatch (p : ps) (x : xs))
-  | p == x = match wc ps xs
-  | otherwise = Nothing
+match wc (p : ps) (x : xs)
+  | p == x = match wc ps xs -- First of pattern is first of string, match rest of string
+  | wc == p = orElse (singleWildcardMatch (p : ps) (x : xs)) (longerWildcardMatch (p : ps) (x : xs)) -- First of pattern is wildcard
+  | ps == xs = Just [x] -- Check if rest of pattern is rest of sting
+  | otherwise = Nothing -- Base case
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
 singleWildcardMatch [] _ = Nothing
 singleWildcardMatch _ [] = Nothing
 singleWildcardMatch (wc : ps) (x : xs)
-  | ps == xs = Just [x]
+  | ps == xs = match wc (wc : ps) (x : xs)
   | otherwise = Nothing
 
 longerWildcardMatch [] _ = Nothing
 longerWildcardMatch _ [] = Nothing
+longerWildcardMatch (wc : ps) [x]
+  | wc == x = Just [] -- Last element is a wildcard
+  | otherwise = Nothing
 longerWildcardMatch (wc : ps) (x : xs)
-  | ps == xs = Just [x]
+  | ps == xs = match wc (wc : ps) (x : xs)
   | otherwise = mmap (x :) (longerWildcardMatch (wc : ps) xs) -- If we get a Just y further down the recursion, prepend current head to new Just x:y
 
 -- Test cases --------------------
