@@ -113,9 +113,11 @@ substitute w (s : ss) r
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _ _ _ = Nothing
-
-{- TO BE WRITTEN -}
+match _ [] _ = Nothing
+match _ _ [] = Nothing
+match wc (p : ps) (x :xs)
+  | wc == p = orElse (singleWildcardMatch (p : ps) (x :xs)) (longerWildcardMatch (p : ps) (x : xs))
+  | p == x = match wc ps xs
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
