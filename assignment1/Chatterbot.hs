@@ -1,6 +1,7 @@
 module Chatterbot where
 
 import Data.Char
+import Data.Maybe (isJust)
 import qualified Data.Maybe
 import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
@@ -38,8 +39,13 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply _ = id
 
 reflect :: Phrase -> Phrase
-{- TO BE WRITTEN -}
-reflect = id
+reflect [] = []
+reflect (p : ps)
+  | isJust rr = r : reflect ps -- p not in reflections
+  | otherwise = p : reflect ps -- p in reflections
+  where
+    rr = lookup p reflections
+    Just r = rr
 
 reflections =
   [ ("am", "are"),
@@ -166,7 +172,7 @@ transformationApply _ _ [] (_, _) = Nothing
 transformationApply _ _ _ ([], _) = Nothing
 transformationApply _ _ _ (_, []) = Nothing
 transformationApply wc f text (matchPattern, substitutePattern)
-  | Data.Maybe.isJust mm = Just (substitute wc substitutePattern (f m))
+  | isJust mm = Just (substitute wc substitutePattern (f m))
   | otherwise = Nothing
   where
     mm = match wc matchPattern text
