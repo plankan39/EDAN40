@@ -183,5 +183,3 @@ transformationsApply wc f (p : ps) text =
   orElse
     (transformationApply wc f text p)
     (transformationsApply wc f ps text)
-
-{- TO BE WRITTEN -}
