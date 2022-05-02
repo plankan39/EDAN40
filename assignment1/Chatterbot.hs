@@ -34,8 +34,9 @@ stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind _ = return id
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-rulesApply _ = id
+rulesApply trans wrds = k
+  where Just k = orElse(transformationsApply "*" reflect trans wrds) (Just [])
+
 
 reflect :: Phrase -> Phrase
 reflect [] = []
