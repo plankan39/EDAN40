@@ -2,7 +2,6 @@ module Chatterbot where
 
 import Data.Char
 import Data.Maybe (isJust)
-import qualified Data.Maybe
 import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
 import Utilities
