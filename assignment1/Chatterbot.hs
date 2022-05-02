@@ -1,6 +1,7 @@
 module Chatterbot where
 
 import Data.Char
+import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
 import Utilities
 
@@ -116,30 +117,30 @@ substitute w (s : ss) r
 -- If first of pattern is wildcard, check for match
 -- If first of pattern is not wildcard, but is same as String first, check rest of string
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
+-- Both lists are empty.
+-- The pattern list is empty but the other list is not.
+-- The pattern list is not empty but the other list is.
+match _ [] [] = Just []
 match _ [] _ = Nothing
 match _ _ [] = Nothing
+match _ p x
+  | p == x = Just []
 match wc (p : ps) (x : xs)
-  | p == x = match wc ps xs -- First of pattern is first of string, match rest of string
-  | wc == p = orElse (singleWildcardMatch (p : ps) (x : xs)) (longerWildcardMatch (p : ps) (x : xs)) -- First of pattern is wildcard
-  | ps == xs = Just [x] -- Check if rest of pattern is rest of sting
-  | otherwise = Nothing -- Base case
+  | wc == p = orElse (singleWildcardMatch (p : ps) (x : xs)) (longerWildcardMatch (p : ps) (x : xs))
+  | p == x = match wc ps xs
+  | otherwise = Nothing
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
 singleWildcardMatch [] _ = Nothing
 singleWildcardMatch _ [] = Nothing
 singleWildcardMatch (wc : ps) (x : xs)
-  | ps == xs = match wc (wc : ps) (x : xs)
+  | ps == xs = Just [x]
+  | match wc ps xs /= Nothing = Just [x]
   | otherwise = Nothing
-
 longerWildcardMatch [] _ = Nothing
 longerWildcardMatch _ [] = Nothing
-longerWildcardMatch (wc : ps) [x]
-  | wc == x = Just [] -- Last element is a wildcard
-  | otherwise = Nothing
-longerWildcardMatch (wc : ps) (x : xs)
-  | ps == xs = match wc (wc : ps) (x : xs)
-  | otherwise = mmap (x :) (longerWildcardMatch (wc : ps) xs) -- If we get a Just y further down the recursion, prepend current head to new Just x:y
+longerWildcardMatch (wc : ps) (x : xs) = mmap (x :) (match wc (wc : ps) xs)
 
 -- Test cases --------------------
 
