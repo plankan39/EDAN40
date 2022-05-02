@@ -4,6 +4,7 @@ import Data.Char
 import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
 import Utilities
+import qualified Data.Maybe
 
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do
@@ -164,9 +165,14 @@ matchCheck = matchTest == Just testSubstitutions
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-transformationApply _ _ _ _ = Nothing
-
-{- TO BE WRITTEN -}
+transformationApply _ _ [] (_, _) = Nothing
+transformationApply _ _ _ ([], _) = Nothing
+transformationApply _ _ _ (_, []) = Nothing
+transformationApply wc f text (matchPattern, substitutePattern)
+  | Data.Maybe.isJust mm = Just (substitute wc substitutePattern (f m))
+  | otherwise = Nothing
+  where mm = match wc matchPattern text 
+        Just m = mm
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
