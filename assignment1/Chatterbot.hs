@@ -39,12 +39,9 @@ rulesApply _ = id
 
 reflect :: Phrase -> Phrase
 reflect [] = []
-reflect (p : ps)
-  | isJust rr = r : reflect ps -- p in reflections
-  | otherwise = p : reflect ps -- p not in reflections
+reflect (p : ps) = k : reflect ps -- p not in reflections
   where
-    rr = lookup p reflections
-    Just r = rr
+    Just k = orElse (lookup p reflections) (Just p)
 
 reflections =
   [ ("am", "are"),
