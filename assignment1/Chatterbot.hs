@@ -39,7 +39,7 @@ rulesApply _ = id
 
 reflect :: Phrase -> Phrase
 reflect [] = []
-reflect (p : ps) = k : reflect ps -- p not in reflections
+reflect (p : ps) = k : reflect ps
   where
     Just k = orElse (lookup p reflections) (Just p)
 
