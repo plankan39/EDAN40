@@ -92,8 +92,10 @@ prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 rulesCompile :: [(String, [String])] -> BotBrain
-{- TO BE WRITTEN -}
-rulesCompile _ = []
+-- Make string used for matching lower by going through all chars by mapping,
+-- then make string to words. Then make all answers to words
+-- Do this for all rules (outer map)
+rulesCompile = map (map2 (words . map toLower, map words))
 
 --------------------------------------
 
