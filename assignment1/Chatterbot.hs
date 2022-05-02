@@ -52,8 +52,8 @@ stateOfMind bb = do
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply trans wrds = k
-  where Just k = orElse(transformationsApply "*" reflect trans wrds) (Just [])
-
+  where
+    Just k = orElse (transformationsApply "*" reflect trans wrds) (Just [])
 
 reflect :: Phrase -> Phrase
 reflect [] = []
@@ -119,9 +119,10 @@ reductions =
 reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
+-- do transformationapplies of the reduction phrase pairs until input equals output
+
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
+reductionsApply = fix . try . transformationsApply "*" id
 
 -------------------------------------------------------
 -- Match and substitute
