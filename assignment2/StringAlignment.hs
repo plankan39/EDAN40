@@ -39,12 +39,10 @@ attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
 maximaBy valueFcn = foldl (maxiB valueFcn) []
     where
-        maxiB _ [] x = [x] 
-        maxiB f acc x =
-            let currentValue = (f $ head acc)
-                newValue = f x
-            in
-            if newValue > currentValue then [x]
-            else
-                if newValue == currentValue then x:acc
-                else acc
+        maxiB _ [] x = [x]
+        maxiB f acc x
+            | newValue > currentMax = [x]
+            | newValue == currentMax = x:acc
+            | otherwise = acc
+                where newValue = f x
+                      currentMax = f (head acc)
