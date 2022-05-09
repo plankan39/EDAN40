@@ -14,6 +14,10 @@ scoreSpace = -2
 string1 = "writers"
 string2 = "vintner"
 
+-- Types
+type AlignmentType = (String, String)
+
+-- Functions
 similarityScore :: String -> String -> Int
 similarityScore [] _ = 0
 similarityScore _ [] = 0
@@ -30,6 +34,7 @@ similarityScore (s1:s1s) (s2:s2s)
 -- in a list of pairs
 attachHeads :: a -> a -> [([a],[a])] -> [([a],[a])]
 attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
+
 
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
 maximaBy valueFcn = foldl (maxiB valueFcn) []
