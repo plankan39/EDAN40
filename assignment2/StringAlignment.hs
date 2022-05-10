@@ -37,7 +37,7 @@ attachHeads h1 h2 aList = [(h1:xs,h2:ys) | (xs,ys) <- aList]
 
 
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
-maximaBy valueFcn = foldl (maxiB valueFcn) []
+maximaBy valueFcn = foldr (maxiB valueFcn) []
     where
         maxiB _ [] x = [x]
         maxiB f acc x
