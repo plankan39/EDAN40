@@ -27,6 +27,13 @@ score x '-' = scoreSpace
 score '-' y = scoreSpace
 score x y = if x == y then scoreMatch else scoreMismatch
 
+-- Recursively finds the score of an alignment by comparing the two strings
+-- one char at a time
+pairScore :: AlignmentType -> Int
+pairScore ([], _) = 0
+pairScore (_, []) = 0
+pairScore (x : xs, y : ys) = pairScore (xs, ys) + score x y
+
 -- Returns the score of the optimal alignment of two strings
 similarityScore :: String -> String -> Int
 similarityScore [] _ = 0
@@ -58,18 +65,11 @@ maximaBy valueFcn = foldl (maxiB valueFcn) []
 
 -- Returns a list of all optimal alignments between two strings
 optAlignments :: String -> String -> [AlignmentType]
-optAlignments [] _ = []
-optAlignments _ [] = []
+optAlignments [] _ = [("","")]
+optAlignments _ [] = [("","")]
 optAlignments (s1 : s1s) (s2 : s2s) =
   maximaBy
     pairScore
     (attachHeads s1 s2 $ optAlignments s1s s2s) -- We don't insert any space here and find alignment for rest of the Strings
     ++ attachHeads s1 '-' (optAlignments s1s (s2 : s2s)) -- We insert space instead first char of second string s2 and try to find the maximum for rest of s1 and the whole of s2
     ++ attachHeads '-' s2 (optAlignments (s1 : s1s) s2s) -- Line above but we insert space instead of s1 instead
-  where
-    -- Recursively finds the score of an alignment by comparing the two strings
-    -- one char at a time
-    pairScore :: AlignmentType -> Int
-    pairScore ([], _) = 0
-    pairScore (_, []) = 0
-    pairScore (x : xs, y : ys) = pairScore (xs, ys) + score x y
