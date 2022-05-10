@@ -68,8 +68,7 @@ optAlignments :: String -> String -> [AlignmentType]
 optAlignments [] _ = [("","")]
 optAlignments _ [] = [("","")]
 optAlignments (s1 : s1s) (s2 : s2s) =
-  maximaBy
-    pairScore
-    (attachHeads s1 s2 $ optAlignments s1s s2s) -- We don't insert any space here and find alignment for rest of the Strings
+  maximaBy pairScore $
+    attachHeads s1 s2 (optAlignments s1s s2s) -- We don't insert any space here and find alignment for rest of the Strings
     ++ attachHeads s1 '-' (optAlignments s1s (s2 : s2s)) -- We insert space instead first char of second string s2 and try to find the maximum for rest of s1 and the whole of s2
     ++ attachHeads '-' s2 (optAlignments (s1 : s1s) s2s) -- Line above but we insert space instead of s1 instead
