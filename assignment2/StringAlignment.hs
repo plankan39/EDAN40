@@ -81,8 +81,7 @@ optAlignments' _ _ = []
 -- Uses a optAlignments function to create a neat output of optimal alignments
 getOutputOptAlignments :: (String -> String -> [AlignmentType]) -> String -> String -> IO ()
 getOutputOptAlignments optAl s1 s2 = do
-        let oa = optAl s1 s2
-        mapM_ printPair oa -- mapM_ executes the IO action printPair for every part of oa, skipping the last empty IO action
+        mapM_ printPair $ optAl s1 s2 -- mapM_ executes the IO action printPair for every part of oa, skipping the last empty IO action
         where printPair (x, y) = do
               print $ intersperse ' ' x
               print $ intersperse ' ' y
