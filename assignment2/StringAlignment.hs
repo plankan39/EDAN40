@@ -74,9 +74,19 @@ optAlignments (s1 : s1s) (s2 : s2s) =
     ++ attachHeads s1 '-' (optAlignments s1s (s2 : s2s)) -- We insert space instead first char of second string s2 and try to find the maximum for rest of s1 and the whole of s2
     ++ attachHeads '-' s2 (optAlignments (s1 : s1s) s2s) -- Line above but we insert space instead of s1 instead
 
-outputOptAlignments s1 s2 = do
-        let oa = optAlignments s1 s2
+-- Optimized version of optAlignments
+optAlignments' :: String -> String -> [AlignmentType]
+optAlignments' _ _ = []
+
+-- Uses a optAlignments function to create a neat output of optimal alignments
+getOutputOptAlignments :: (String -> String -> [AlignmentType]) -> String -> String -> IO ()
+getOutputOptAlignments optAl s1 s2 = do
+        let oa = optAl s1 s2
         mapM_ printPair oa -- mapM_ executes the IO action printPair for every part of oa, skipping the last empty IO action
         where printPair (x, y) = do
               print $ intersperse ' ' x
               print $ intersperse ' ' y
+
+outputOptAlignments = getOutputOptAlignments optAlignments
+
+outputOptAlignments' = getOutputOptAlignments optAlignments'
