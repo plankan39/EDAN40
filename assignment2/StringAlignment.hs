@@ -38,7 +38,6 @@ pairScore (x : xs, y : ys) = pairScore (xs, ys) + score x y
 
 -- Returns the score of the optimal alignment of two strings
 similarityScore', similarityScore :: String -> String -> Int
-
 similarityScore' [] _ = 0
 similarityScore' _ [] = 0
 similarityScore' (s1 : s1s) (s2 : s2s) =
@@ -47,7 +46,6 @@ similarityScore' (s1 : s1s) (s2 : s2s) =
       similarityScore' s1s (s2 : s2s) + score s1 '-',
       similarityScore' (s1 : s1s) s2s + score '-' s2
     ]
-
 -- Optimized similarityScore'
 similarityScore [] _ = 0
 similarityScore _ [] = 0
@@ -66,10 +64,9 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
       -- calls with calls in the table
       | x == y = simSco (i - 1) (j - 1) + score x y -- Letters are the same; Don't try to insert space but look for rest of word (exact match is max score for one column)
       | otherwise =
-        maximum
-          [ simSco i (j - 1) + score x '-',
-            simSco (i - 1) j + score '-' y
-          ]
+        max
+          (simSco i (j - 1) + score x '-')
+          (simSco (i - 1) j + score '-' y)
       where
         x = s1 !! (i - 1) -- x and y are the Char at (i - 1) and (j - 1) in strings s1 and s2 respectively (i and j comes from length of strings, i.e. maxIndex + 1)
         y = s2 !! (j - 1)
@@ -94,7 +91,6 @@ maximaBy valueFcn = foldl (maxiB valueFcn) []
 
 -- Returns a list of all optimal alignments between two strings
 optAlignments', optAlignments :: String -> String -> [AlignmentType]
-
 optAlignments' [] _ = [("", "")]
 optAlignments' _ [] = [("", "")]
 optAlignments' (s1 : s1s) (s2 : s2s) =
