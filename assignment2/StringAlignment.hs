@@ -3,20 +3,19 @@ import Data.List (intersperse)
 -- EDAN40 A2 String Alignment by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 
 -- Hardcoded values
-scoreMatch :: Int
-scoreMismatch :: Int
-scoreSpace :: Int
-string1 :: [Char]
-string2 :: [Char]
-scoreMatch = 1
-
+scoreMatch, scoreMismatch, scoreSpace :: Int
+string1, string2, string3, string4 :: [Char]
+scoreMatch = 0
 scoreMismatch = -1
-
-scoreSpace = -2
+scoreSpace = -1
 
 string1 = "writers"
 
 string2 = "vintner"
+
+string3 = "aferociousmonadatemyhamster"
+
+string4 = "functionalprogrammingrules"
 
 -- Types
 type AlignmentType = (String, String)
