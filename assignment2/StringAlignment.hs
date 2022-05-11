@@ -70,7 +70,7 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
             simSco (i - 1) j + score '-' y
           ]
       where
-        x = s1 !! (i - 1) -- x and y are the Char at (i - 1) and (j - 1) in strings s1 and s2 respectively
+        x = s1 !! (i - 1) -- x and y are the Char at (i - 1) and (j - 1) in strings s1 and s2 respectively (i and j comes from length of strings, i.e. maxIndex + 1)
         y = s2 !! (j - 1)
 
 -- Attaches h1 and h2 to the list in fst and snd respectively
