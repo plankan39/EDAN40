@@ -57,17 +57,18 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
     -- Entry of our simTable, takes indexes and returns score of that entry
     simEntry :: Int -> Int -> Int
     simEntry 0 0 = 0
+    -- These two are: We are at the border of the table
     simEntry 0 j = simSco 0 (j - 1) + score '-' (s2 !! (j - 1)) -- We compare an empty list to some string in the table
     simEntry i 0 = simSco (i - 1) 0 + score (s1 !! (i - 1)) '-'
-    simEntry i j
-      -- These are where the scoring is done, we recursively look in the table
-      -- for the results. This is basically similarityScore', but we replace recursive
-      -- calls with calls in the table
-      | x == y = simSco (i - 1) (j - 1) + score x y -- Letters are the same; Don't try to insert space but look for rest of word (exact match is max score for one column)
-      | otherwise =
-        max
-          (simSco i (j - 1) + score x '-')
-          (simSco (i - 1) j + score '-' y)
+    -- These are where the scoring is done, we recursively look in the table
+    -- for the results. This is basically similarityScore', but we replace recursive
+    -- calls with calls in the table
+    simEntry i j =
+      maximum
+        [ simSco (i - 1) (j - 1) + score x y,
+          simSco i (j - 1) + score x '-',
+          simSco (i - 1) j + score '-' y
+        ]
       where
         x = s1 !! (i - 1) -- x and y are the Char at (i - 1) and (j - 1) in strings s1 and s2 respectively (i and j comes from length of strings, i.e. maxIndex + 1)
         y = s2 !! (j - 1)
