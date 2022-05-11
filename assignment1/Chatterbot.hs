@@ -1,8 +1,8 @@
+-- EDAN40 A1 Chatterbots by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 module Chatterbot where
 
 import Data.Char
 import Data.Maybe (isJust)
-import GHC (ApplicativeArg (xarg_app_arg_many))
 import System.Random
 import Utilities
 
