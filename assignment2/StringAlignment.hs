@@ -56,8 +56,9 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
 
     -- Entry of our simTable, takes indexes and returns score of that entry
     simEntry :: Int -> Int -> Int
-    simEntry 0 _ = 0 -- We compare an empty list to some string in the table
-    simEntry _ 0 = 0
+    simEntry 0 0 = 0
+    simEntry 0 j = simSco 0 (j - 1) + score '-' (s2 !! (j - 1)) -- We compare an empty list to some string in the table
+    simEntry i 0 = simSco (i - 1) 0 + score (s1 !! (i - 1)) '-'
     simEntry i j
       -- These are where the scoring is done, we recursively look in the table
       -- for the results. This is basically similarityScore', but we replace recursive
