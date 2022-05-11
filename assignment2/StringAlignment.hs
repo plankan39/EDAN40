@@ -1,6 +1,5 @@
-import Data.List (intersperse)
-
 -- EDAN40 A2 String Alignment by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
+import Data.List (intersperse)
 
 -- Hardcoded values
 scoreMatch, scoreMismatch, scoreSpace :: Int
