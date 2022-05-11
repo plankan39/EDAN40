@@ -37,7 +37,8 @@ pairScore (_, []) = 0
 pairScore (x : xs, y : ys) = pairScore (xs, ys) + score x y
 
 -- Returns the score of the optimal alignment of two strings
-similarityScore' :: String -> String -> Int
+similarityScore', similarityScore :: String -> String -> Int
+
 similarityScore' [] _ = 0
 similarityScore' _ [] = 0
 similarityScore' (s1 : s1s) (s2 : s2s) =
@@ -47,7 +48,7 @@ similarityScore' (s1 : s1s) (s2 : s2s) =
       similarityScore' (s1 : s1s) s2s + score '-' s2
     ]
 
-similarityScore :: String -> String -> Int
+-- Optimized similarityScore'
 similarityScore [] _ = 0
 similarityScore _ [] = 0
 similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, we go from the back
@@ -63,7 +64,7 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
       -- These are where the scoring is done, we recursively look in the table
       -- for the results. This is basically similarityScore', but we replace recursive
       -- calls with calls in the table
-      | x == y = score x y + simSco (i - 1) (j - 1) -- Letters are the same; Don't try to insert space but look for rest of word (exact match is max score for one column)
+      | x == y = simSco (i - 1) (j - 1) + score x y -- Letters are the same; Don't try to insert space but look for rest of word (exact match is max score for one column)
       | otherwise =
         maximum
           [ simSco i (j - 1) + score x '-',
@@ -92,7 +93,8 @@ maximaBy valueFcn = foldl (maxiB valueFcn) []
         currentMax = f (head acc)
 
 -- Returns a list of all optimal alignments between two strings
-optAlignments' :: String -> String -> [AlignmentType]
+optAlignments', optAlignments :: String -> String -> [AlignmentType]
+
 optAlignments' [] _ = [("", "")]
 optAlignments' _ [] = [("", "")]
 optAlignments' (s1 : s1s) (s2 : s2s) =
@@ -101,8 +103,7 @@ optAlignments' (s1 : s1s) (s2 : s2s) =
       ++ attachHeads s1 '-' (optAlignments' s1s (s2 : s2s)) -- We insert space instead first char of second string s2 and try to find the maximum for rest of s1 and the whole of s2
       ++ attachHeads '-' s2 (optAlignments' (s1 : s1s) s2s) -- Line above but we insert space instead of s1 instead
 
--- Optimized version of optAlignments
-optAlignments :: String -> String -> [AlignmentType]
+-- Optimized version of optAlignments'
 optAlignments _ _ = []
 
 -- Uses a optAlignments function to create a neat output of optimal alignments
