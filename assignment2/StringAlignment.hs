@@ -66,8 +66,8 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
       | x == y = score x y + simSco (i - 1) (j - 1) -- Letters are the same; Don't try to insert space but look for rest of word (exact match is max score for one column)
       | otherwise =
         maximum
-          [ score x '-' + simSco i (j - 1),
-            score '-' y + simSco (i - 1) j
+          [ simSco i (j - 1) + score x '-',
+            simSco (i - 1) j + score '-' y
           ]
       where
         x = s1 !! (i - 1) -- x and y are the Char at (i - 1) and (j - 1) in strings s1 and s2 respectively
