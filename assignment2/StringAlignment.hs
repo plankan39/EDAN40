@@ -3,18 +3,17 @@ import Data.List (intersperse)
 
 -- Hardcoded values
 scoreMatch, scoreMismatch, scoreSpace :: Int
-string1, string2, string3, string4 :: [Char]
+string1, string2, string3, string4, string5, string6 :: [Char]
 scoreMatch = 0
 scoreMismatch = -1
 scoreSpace = -1
 
 string1 = "writers"
-
 string2 = "vintner"
-
 string3 = "aferociousmonadatemyhamster"
-
 string4 = "functionalprogrammingrules"
+string5 = "bananrepubliksinvasionsarmestabsadjutant"
+string6 = "kontrabasfiolfodralmakarmästarlärling"
 
 -- Types
 type AlignmentType = (String, String)
