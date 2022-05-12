@@ -1,5 +1,6 @@
 -- EDAN40 A2 String Alignment by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 import Data.List (intersperse)
+import GhcPlugins (setStyleColoured)
 
 -- Hardcoded values
 scoreMatch, scoreMismatch, scoreSpace :: Int
@@ -9,14 +10,21 @@ scoreMismatch = -1
 scoreSpace = -1
 
 string1 = "writers"
+
 string2 = "vintner"
+
 string3 = "aferociousmonadatemyhamster"
+
 string4 = "functionalprogrammingrules"
+
 string5 = "bananrepubliksinvasionsarmestabsadjutant"
+
 string6 = "kontrabasfiolfodralmakarmästarlärling"
 
 -- Types
 type AlignmentType = (String, String)
+
+type ScoredAlignments = (Int, [AlignmentType])
 
 -- Functions
 
@@ -72,8 +80,9 @@ similarityScore s1 s2 = simSco (length s1) (length s2) -- Lengths are indexes, w
 
 -- Attaches h1 and h2 to the list in fst and snd respectively
 -- in a list of pairs
-attachHeads :: a -> a -> [([a], [a])] -> [([a], [a])]
+attachHeads, attachTails :: a -> a -> [([a], [a])] -> [([a], [a])]
 attachHeads h1 h2 aList = [(h1 : xs, h2 : ys) | (xs, ys) <- aList]
+attachTails h1 h2 aList = [(xs ++ [h1], ys ++ [h2]) | (xs, ys) <- aList] -- This is inneficient, structure differently?
 
 -- Finds the list of maximas of a list, using a provided function to find the order
 maximaBy :: Ord b => (a -> b) -> [a] -> [a]
@@ -99,7 +108,41 @@ optAlignments' (s1 : s1s) (s2 : s2s) =
       ++ attachHeads '-' s2 (optAlignments' (s1 : s1s) s2s) -- Line above but we insert space instead of s1 instead
 
 -- Optimized version of optAlignments'
-optAlignments _ _ = []
+optAlignments [] _ = [("", "")]
+optAlignments _ [] = [("", "")]
+optAlignments s1 s2 = al $ optAli (length s1) (length s2)
+  where
+    al (_, alignments) = alignments
+    optAli i j = optTable !! i !! j
+    optTable = [[optEntry i j | j <- [0 ..]] | i <- [0 ..]]
+
+    -- Builds scored alignments from the back
+    addAli :: ScoredAlignments -> Int -> Char -> Char -> ScoredAlignments
+    addAli (score1, ali) score2 k l = (score1 + score2, attachTails k l ali)
+
+    -- i -> j -> (Score, Alignments)
+    optEntry :: Int -> Int -> ScoredAlignments
+    optEntry 0 0 = (0, [])
+    optEntry 0 j = addAli (optAli 0 (j - 1)) (score '-' y) '-' y
+      where
+        y = s2 !! (j - 1)
+    optEntry i 0 = addAli (optAli (i - 1) 0) (score x '-') x '-'
+      where
+        x = s1 !! (i - 1)
+    optEntry i j =
+      joinsa $ maximaBy sa
+        [ addAli (optAli (i - 1) (j - 1)) (score x y) x y,
+          addAli (optAli i (j - 1)) (score x '-') x '-',
+          addAli (optAli (i - 1) j) (score '-' y) '-' y
+        ]
+      where
+        -- Joins multiple ScoredAlignment tuples with same score to one ScoredAlignments
+        joinsa :: [ScoredAlignments] -> ScoredAlignments
+        joinsa sas = foldl (\(score, accAlis) (_, alis) -> (score, accAlis ++ alis)) (fst $ head sas, []) sas
+        sa :: ScoredAlignments -> Int
+        sa (score, _) = score
+        x = s1 !! (i - 1)
+        y = s2 !! (j - 1)
 
 -- Uses a optAlignments function to create a neat output of optimal alignments
 getOutputOptAlignments :: (String -> String -> [AlignmentType]) -> String -> String -> IO ()
