@@ -1,6 +1,20 @@
 -- EDAN40 A2 String Alignment by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
+
+{-
+Q: What part of the code was the hardest to write?
+A: The first time we replaced a recursive call to a call to a table in `similarityScore` was without a doubt
+the hardest, since it was very new to us. We had to sketch out the table to be able to find all possible routes through
+it. The base cases (such as: "What happens if we go along the edge of the table") was especially tricky
+
+Q: Which part of your code are you the most proud of?
+A: Honestly the same as in the previous question. While a bit tricky to get right, the principle is very smart
+and such an obvious optimization in hindsight (however, if we were to write something like this again, we would
+probably start with unomptimized versions again, to make optimizations easier)
+
+We also want to note that there are significant gains in performance to be gained by ensuring the appending of lists (++)
+is removed. From what we know of Haskell, this isn't very efficient, and should be replaced with prepending (:) to lists.
+-}
 import Data.List (intersperse)
-import GhcPlugins (setStyleColoured)
 
 -- Hardcoded values
 scoreMatch, scoreMismatch, scoreSpace :: Int
@@ -127,11 +141,11 @@ optAlignments s1 s2 = getAlignments $ optAli (length s1) (length s2)
 
     -- i -> j -> (Score, Alignments)
     optEntry :: Int -> Int -> ScoredAlignments
-    optEntry 0 0 = (0, [("","")])
+    optEntry 0 0 = (0, [("", "")])
     optEntry 0 j = addAli (optAli 0 (j - 1)) '-' y
       where
         y = s2 !! (j - 1)
-    optEntry i 0 = addAli (optAli (i - 1) 0)  x '-'
+    optEntry i 0 = addAli (optAli (i - 1) 0) x '-'
       where
         x = s1 !! (i - 1)
     optEntry i j =
