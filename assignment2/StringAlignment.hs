@@ -28,6 +28,12 @@ type ScoredAlignments = (Int, [AlignmentType])
 
 -- Functions
 
+getAlignments :: ScoredAlignments -> [AlignmentType]
+getAlignments (_, alignments) = alignments
+
+getScore :: ScoredAlignments -> Int
+getScore (score, _) = score
+
 -- Returns the score of two Chars
 score :: Char -> Char -> Int
 score x '-' = scoreSpace
@@ -110,9 +116,8 @@ optAlignments' (s1 : s1s) (s2 : s2s) =
 -- Optimized version of optAlignments'
 optAlignments [] _ = [("", "")]
 optAlignments _ [] = [("", "")]
-optAlignments s1 s2 = al $ optAli (length s1) (length s2)
+optAlignments s1 s2 = getAlignments $ optAli (length s1) (length s2)
   where
-    al (_, alignments) = alignments
     optAli i j = optTable !! i !! j
     optTable = [[optEntry i j | j <- [0 ..]] | i <- [0 ..]]
 
@@ -130,17 +135,17 @@ optAlignments s1 s2 = al $ optAli (length s1) (length s2)
       where
         x = s1 !! (i - 1)
     optEntry i j =
-      joinsa $ maximaBy sa
-        [ addAli (optAli (i - 1) (j - 1)) (score x y) x y,
-          addAli (optAli i (j - 1)) (score x '-') x '-',
-          addAli (optAli (i - 1) j) (score '-' y) '-' y
-        ]
+      joinsa $
+        maximaBy
+          getScore
+          [ addAli (optAli (i - 1) (j - 1)) (score x y) x y,
+            addAli (optAli i (j - 1)) (score x '-') x '-',
+            addAli (optAli (i - 1) j) (score '-' y) '-' y
+          ]
       where
         -- Joins multiple ScoredAlignment tuples with same score to one ScoredAlignments
         joinsa :: [ScoredAlignments] -> ScoredAlignments
         joinsa sas = foldl (\(score, accAlis) (_, alis) -> (score, accAlis ++ alis)) (fst $ head sas, []) sas
-        sa :: ScoredAlignments -> Int
-        sa (score, _) = score
         x = s1 !! (i - 1)
         y = s2 !! (j - 1)
 
