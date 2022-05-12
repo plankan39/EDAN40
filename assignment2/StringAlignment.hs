@@ -122,29 +122,30 @@ optAlignments s1 s2 = getAlignments $ optAli (length s1) (length s2)
     optTable = [[optEntry i j | j <- [0 ..]] | i <- [0 ..]]
 
     -- Builds scored alignments from the back
-    addAli :: ScoredAlignments -> Int -> Char -> Char -> ScoredAlignments
-    addAli (score1, ali) score2 k l = (score1 + score2, attachTails k l ali)
+    addAli :: ScoredAlignments -> Char -> Char -> ScoredAlignments
+    addAli (score1, ali) c1 c2 = (score1 + score c1 c2, attachTails c1 c2 ali)
 
     -- i -> j -> (Score, Alignments)
     optEntry :: Int -> Int -> ScoredAlignments
     optEntry 0 0 = (0, [])
-    optEntry 0 j = addAli (optAli 0 (j - 1)) (score '-' y) '-' y
+    optEntry 0 j = addAli (optAli 0 (j - 1))  '-' y
       where
         y = s2 !! (j - 1)
-    optEntry i 0 = addAli (optAli (i - 1) 0) (score x '-') x '-'
+    optEntry i 0 = addAli (optAli (i - 1) 0)  x '-'
       where
         x = s1 !! (i - 1)
     optEntry i j =
       joinsa $
         maximaBy
           getScore
-          [ addAli (optAli (i - 1) (j - 1)) (score x y) x y,
-            addAli (optAli i (j - 1)) (score x '-') x '-',
-            addAli (optAli (i - 1) j) (score '-' y) '-' y
+          [ addAli (optAli (i - 1) (j - 1)) x y,
+            addAli (optAli i (j - 1)) x '-',
+            addAli (optAli (i - 1) j) '-' y
           ]
       where
         -- Joins multiple ScoredAlignment tuples with same score to one ScoredAlignments
         joinsa :: [ScoredAlignments] -> ScoredAlignments
+        joinsa [] = (0, [])
         joinsa sas = foldl (\(score, accAlis) (_, alis) -> (score, accAlis ++ alis)) (fst $ head sas, []) sas
         x = s1 !! (i - 1)
         y = s2 !! (j - 1)
