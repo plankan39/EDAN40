@@ -127,8 +127,8 @@ optAlignments s1 s2 = getAlignments $ optAli (length s1) (length s2)
 
     -- i -> j -> (Score, Alignments)
     optEntry :: Int -> Int -> ScoredAlignments
-    optEntry 0 0 = (0, [])
-    optEntry 0 j = addAli (optAli 0 (j - 1))  '-' y
+    optEntry 0 0 = (0, [("","")])
+    optEntry 0 j = addAli (optAli 0 (j - 1)) '-' y
       where
         y = s2 !! (j - 1)
     optEntry i 0 = addAli (optAli (i - 1) 0)  x '-'
