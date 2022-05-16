@@ -31,6 +31,7 @@ type T a = Parser a
 err :: String -> Parser a
 err message cs = error (message ++ " near " ++ cs ++ "\n")
 
+-- |Iterates on a parser until no longer possible
 iter :: Parser a -> Parser [a]
 iter m = m # iter m >-> cons ! return []
 
@@ -47,13 +48,14 @@ m -# n = m # n >-> snd
 m #- n = m # n >-> fst
 
 spaces :: Parser String
-spaces = error "spaces not implemented"
+spaces = iter $ char ? isSpace
 
+-- |Removes trailing spaces after a string
 token :: Parser a -> Parser a
-token m = m #- spaces
+token m = m #- spaces -- Defined as `m #- iter space` in PDF
 
 letter :: Parser Char
-letter = error "letter not implemented"
+letter = char ? isAlpha
 
 word :: Parser String
 word = token (letter # iter letter >-> cons)

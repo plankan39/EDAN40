@@ -75,7 +75,7 @@ to the next one, finally giving the two results as a pair
         Nothing -> Nothing
         Just (b, cs'') -> Just ((a, b), cs'')
 
--- |Transfrom the result of a parser
+-- |Transfrom the result of a parser, to a new parser
 (>->) :: Parser a -> (a -> b) -> Parser b
 (m >-> b) cs =
   case m cs of
