@@ -64,11 +64,12 @@ chars :: Int -> Parser String
 chars 0 = return []
 chars n = char # chars (n - 1) >-> cons
 
+-- |Checks if w is a token (i.e. contains trailing whitespaces)
 accept :: String -> Parser String
 accept w = (token (chars (length w))) ? (== w)
 
 require :: String -> Parser String
-require w = error "require not implemented"
+require w = accept w ! err w
 
 lit :: Char -> Parser Char
 lit c = token char ? (== c)
