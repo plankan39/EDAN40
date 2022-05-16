@@ -82,6 +82,13 @@ to the next one, finally giving the two results as a pair
     Just (a, cs') -> Just (b a, cs')
     Nothing -> Nothing
 
+{-|
+Makes both the resulting parser and the remaining string
+available to the next parser
+
+Useful when parsing numbers and arithmetic expressions
+with left-associative operators like - and /
+-}
 (#>) :: Parser a -> (a -> Parser b) -> Parser b
 (p #> k) cs =
   case p cs of

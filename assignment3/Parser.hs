@@ -36,11 +36,13 @@ iter m = m # iter m >-> cons ! return []
 
 cons (a, b) = a : b
 
--- |Applies two parsers in sequence, but throws away the **first** one
+-- |Applies two parsers in sequence, but throws away
+-- the result of the **first** one
 (-#) :: Parser a -> Parser b -> Parser b
 m -# n = error "-# not implemented"
 
--- |Applies two parsers in sequence, but throws away the **second** one
+-- |Applies two parsers in sequence, but throws away
+-- the result of the **second** one
 (#-) :: Parser a -> Parser b -> Parser a
 m #- n = error "#- not implemented"
 
