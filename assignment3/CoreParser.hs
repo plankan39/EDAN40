@@ -49,23 +49,22 @@ return a cs = Just (a, cs)
 fail :: Parser a
 fail cs = Nothing
 
--- |Example: (m ! n) == Apply m to input. If it fails, apply n
+-- | Example: (m ! n) == Apply m to input. If it fails, apply n
 (!) :: Parser a -> Parser a -> Parser a
 (m ! n) cs = case m cs of
   Nothing -> n cs
   mcs -> mcs
 
--- |Example: (m ? p) == Apply m to the input and check if it satisfies p
+-- | Example: (m ? p) == Apply m to the input and check if it satisfies p
 (?) :: Parser a -> (a -> Bool) -> Parser a
 (m ? p) cs =
   case m cs of
     Nothing -> Nothing
     Just (r, s) -> if p r then Just (r, s) else Nothing
 
-{-|
-Applies two parsers in sequence, where the result of the first one is fed
-to the next one, finally giving the two results as a pair
--}
+-- |
+-- Applies two parsers in sequence, where the result of the first one is fed
+-- to the next one, finally giving the two results as a pair
 (#) :: Parser a -> Parser b -> Parser (a, b)
 (m # n) cs =
   case m cs of
@@ -75,20 +74,19 @@ to the next one, finally giving the two results as a pair
         Nothing -> Nothing
         Just (b, cs'') -> Just ((a, b), cs'')
 
--- |Transfrom the result of a parser, to a new parser
+-- | Transfrom the result of a parser, to a new parser
 (>->) :: Parser a -> (a -> b) -> Parser b
 (m >-> b) cs =
   case m cs of
     Just (a, cs') -> Just (b a, cs')
     Nothing -> Nothing
 
-{-|
-Makes both the resulting parser and the remaining string
-available to the next parser
-
-Useful when parsing numbers and arithmetic expressions
-with left-associative operators like - and /
--}
+-- |
+-- Makes both the resulting parser and the remaining string
+-- available to the next parser
+--
+-- Useful when parsing numbers and arithmetic expressions
+-- with left-associative operators like - and /
 (#>) :: Parser a -> (a -> Parser b) -> Parser b
 (p #> k) cs =
   case p cs of
