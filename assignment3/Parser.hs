@@ -39,12 +39,12 @@ cons (a, b) = a : b
 -- |Applies two parsers in sequence, but throws away
 -- the result of the **first** one
 (-#) :: Parser a -> Parser b -> Parser b
-m -# n = error "-# not implemented"
+m -# n = m # n >-> snd
 
 -- |Applies two parsers in sequence, but throws away
 -- the result of the **second** one
 (#-) :: Parser a -> Parser b -> Parser a
-m #- n = error "#- not implemented"
+m #- n = m # n >-> fst
 
 spaces :: Parser String
 spaces = error "spaces not implemented"
