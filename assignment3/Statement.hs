@@ -46,7 +46,7 @@ read = accept "read" -# word #- require ";" >-> buildRead
 
 buildRead = Read
 
-write = accept "write" -# Expr.parse >-> buildWrite
+write = accept "write" -# Expr.parse #- require ";" >-> buildWrite
 
 buildWrite = Write
 
