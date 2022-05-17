@@ -64,6 +64,7 @@ exec ((While cond stmt) : stmts) dict input =
   if Expr.value cond dict > 0
     then exec (stmt : (While cond stmt : stmts)) dict input
     else exec stmts dict input
+exec ((Read str) : stmts) _ [] = error ("Can not Read, input is empty")
 exec ((Read str) : stmts) dict (i : input) =
   exec stmts (Dictionary.insert (str, i) dict) input
 exec ((Write expr) : stmts) dict input =
