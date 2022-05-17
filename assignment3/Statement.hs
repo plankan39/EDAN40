@@ -38,6 +38,10 @@ ifelse = accept "if" -# Expr.parse #- require "then" # parse #- require "else" #
 
 buildIfelse ((e, s1), s2) = If e s1 s2
 
+whiledo = accept "while" -# Expr.parse #- require "do" # parse >-> buildWhiledo
+
+buildWhiledo (e, s) = While e s
+
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts : stmts) dict input =
   if (Expr.value cond dict) > 0
