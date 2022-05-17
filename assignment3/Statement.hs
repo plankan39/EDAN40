@@ -15,6 +15,7 @@ data Statement
   | While Expr.T Statement
   | Read String
   | Write Expr.T
+  | Comment String
   deriving (Show)
 
 -- The >-> build* is for creating a Statement out
@@ -50,6 +51,8 @@ write = accept "write" -# Expr.parse #- require ";" >-> buildWrite
 
 buildWrite = Write
 
+comment = Parser.comment >-> Comment
+
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec [] _ _ = []
 exec (If cond thenStmts elseStmts : stmts) dict input =
@@ -64,12 +67,28 @@ exec ((While cond stmt) : stmts) dict input =
   if Expr.value cond dict > 0
     then exec (stmt : (While cond stmt : stmts)) dict input
     else exec stmts dict input
-exec ((Read str) : stmts) _ [] = error ("Can not Read, input is empty")
+exec ((Read str) : stmts) _ [] = error "Can not Read, input is empty"
 exec ((Read str) : stmts) dict (i : input) =
   exec stmts (Dictionary.insert (str, i) dict) input
 exec ((Write expr) : stmts) dict input =
   Expr.value expr dict : exec stmts dict input
+exec ((Comment c) : stmts) dict input = exec stmts dict input
 
 instance Parse Statement where
   parse = assignment ! skip ! block ! ifelse ! whiledo ! Statement.read ! write
-  toString = error "Statement.toString not implemented"
+  toString (If cond thenStmts elseStmts) =
+    "if "
+      ++ toString cond
+      ++ " then\n\t"
+      ++ toString thenStmts
+      ++ "else\n\t"
+      ++ toString elseStmts
+  toString (Assignment var val) =
+    var ++ " := " ++ toString val ++ ";\n"
+  toString (Skip) = "skip;\n"
+  toString (Block stmts) = "begin\n\t" ++ foldl tabAppend "" stmts ++  "end\n"
+    where tabAppend acc stmt = acc ++ "\t" ++ toString stmt
+  toString (While cond stmt) = "while " ++ toString cond ++ "do\n\t" ++ toString stmt
+  toString (Read str) = "read " ++ str ++ ";\n"
+  toString (Write expr) = "write " ++ toString expr ++ ";\n"
+  toString (Comment c) = "--" ++ c ++ "\n"
