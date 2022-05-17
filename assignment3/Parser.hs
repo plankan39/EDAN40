@@ -50,6 +50,9 @@ m #- n = m # n >-> fst
 spaces :: Parser String
 spaces = iter $ char ? isSpace
 
+comment :: Parser String
+comment = accept "--" -# iter (char ? (=='\n'))
+
 -- |Removes trailing spaces after a string
 token :: Parser a -> Parser a
 token m = m #- spaces -- Defined as `m #- iter space` in PDF
