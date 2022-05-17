@@ -34,9 +34,9 @@ block = accept "begin" -# iter parse #- require "end" >-> buildBlock
 
 buildBlock = Block
 
-ifelse = accept "if" -# Expr.parse #- require "then" -# parse #- require "else" -# parse >-> buildIfelse
+ifelse = accept "if" -# Expr.parse #- require "then" # parse #- require "else" # parse >-> buildIfelse
 
-buildIfelse (e, s1, s2) = If e s1 s2
+buildIfelse ((e, s1), s2) = If e s1 s2
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts : stmts) dict input =
