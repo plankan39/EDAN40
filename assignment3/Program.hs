@@ -1,12 +1,14 @@
-module Program(T, parse, fromString, toString, exec) where
+module Program (T, parse, fromString, toString, exec) where
+
+import qualified Dictionary
 import Parser hiding (T)
 import qualified Statement
-import qualified Dictionary
-import Prelude hiding (return, fail)
+import Prelude hiding (fail, return)
+
 newtype T = Program [Statement.T]
 
 instance Parse T where
   parse = iter Statement.parse >-> Program
-  toString = error "Program.toString not implemented"
+  toString (Program p) = concatMap Statement.toString p
 
 exec = Statement.exec
