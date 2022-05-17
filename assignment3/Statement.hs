@@ -21,36 +21,51 @@ data Statement
 -- The >-> build* is for creating a Statement out
 -- of the parsing
 
+assignment :: Parser Statement
 assignment = word #- accept ":=" # Expr.parse #- require ";" >-> buildAss
 
+buildAss :: (String, Expr.T) -> Statement
 buildAss (v, e) = Assignment v e
 
+skip :: Parser Statement
 skip = accept "skip" #- require ";" >-> buildSkip
 
+buildSkip :: p -> Statement
 buildSkip _ = Skip
 
 -- Accept "begin", read statements until no longer possible,
 -- and require that the last word is "end", then make this a block
+block :: Parser Statement
 block = accept "begin" -# iter parse #- require "end" >-> buildBlock
 
+buildBlock :: [Statement] -> Statement
 buildBlock = Block
 
+ifelse :: Parser Statement
 ifelse = accept "if" -# Expr.parse #- require "then" # parse #- require "else" # parse >-> buildIfelse
 
+buildIfelse :: ((Expr.T, Statement), Statement) -> Statement
 buildIfelse ((e, s1), s2) = If e s1 s2
 
+whiledo :: Parser Statement
 whiledo = accept "while" -# Expr.parse #- require "do" # parse >-> buildWhiledo
 
+buildWhiledo :: (Expr.T, Statement) -> Statement
 buildWhiledo (e, s) = While e s
 
+read :: Parser Statement
 read = accept "read" -# word #- require ";" >-> buildRead
 
+buildRead :: String -> Statement
 buildRead = Read
 
+write :: Parser Statement
 write = accept "write" -# Expr.parse #- require ";" >-> buildWrite
 
+buildWrite :: Expr.T -> Statement
 buildWrite = Write
 
+comment :: Parser Statement
 comment = Parser.comment >-> Comment
 
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
