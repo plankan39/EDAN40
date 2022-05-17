@@ -42,6 +42,14 @@ whiledo = accept "while" -# Expr.parse #- require "do" # parse >-> buildWhiledo
 
 buildWhiledo (e, s) = While e s
 
+read = accept "read" -# word #- require ";" >-> buildRead
+
+buildRead = Read
+
+write = accept "write" -# Expr.parse >-> buildWrite
+
+buildWrite = Write
+
 exec :: [T] -> Dictionary.T String Integer -> [Integer] -> [Integer]
 exec (If cond thenStmts elseStmts : stmts) dict input =
   if (Expr.value cond dict) > 0
