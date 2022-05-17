@@ -100,9 +100,10 @@ instance Parse Statement where
       ++ toString elseStmts
   toString (Assignment var val) =
     var ++ " := " ++ toString val ++ ";\n"
-  toString (Skip) = "skip;\n"
-  toString (Block stmts) = "begin\n\t" ++ foldl tabAppend "" stmts ++  "end\n"
-    where tabAppend acc stmt = acc ++ "\t" ++ toString stmt
+  toString Skip = "skip;\n"
+  toString (Block stmts) = "begin\n\t" ++ foldl tabAppend "" stmts ++ "end\n"
+    where
+      tabAppend acc stmt = acc ++ "\t" ++ toString stmt
   toString (While cond stmt) = "while " ++ toString cond ++ "do\n\t" ++ toString stmt
   toString (Read str) = "read " ++ str ++ ";\n"
   toString (Write expr) = "write " ++ toString expr ++ ";\n"
