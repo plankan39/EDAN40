@@ -64,7 +64,8 @@ chars :: Int -> Parser String
 chars 0 = return []
 chars n = char # chars (n - 1) >-> cons
 
--- |Checks if w is a token (i.e. contains trailing whitespaces)
+-- |Checks if w is a token (i.e. contains trailing whitespaces),
+-- and if so accepts the string. Otherwise do not accept the string
 accept :: String -> Parser String
 accept w = (token (chars (length w))) ? (== w)
 
