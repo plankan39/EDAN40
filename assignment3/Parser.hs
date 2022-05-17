@@ -50,8 +50,10 @@ m #- n = m # n >-> fst
 spaces :: Parser String
 spaces = iter $ char ? isSpace
 
+-- |Finds comments by finding "--" and then iterating until newline ('\n')
+-- is found
 comment :: Parser String
-comment = accept "--" -# iter (char ? (=='\n'))
+comment = accept "--" -# iter (char ? (/= '\n')) #- require "\n" -- Continue iterating until \n found
 
 -- |Removes trailing spaces after a string
 token :: Parser a -> Parser a
