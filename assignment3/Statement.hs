@@ -89,22 +89,29 @@ exec ((Write expr) : stmts) dict input =
   Expr.value expr dict : exec stmts dict input
 exec ((Comment c) : stmts) dict input = exec stmts dict input
 
+indt :: Int -> String
+indt 0 = ""
+indt i = indt (i - 1) ++ "\t"
+
+toString' :: T -> Int -> String
+toString' (If cond thenStmts elseStmts) i =
+    "if "
+      ++ Expr.toString cond
+      ++ " then\n"
+      ++ toString' thenStmts (i+1)
+      ++ indt i ++ "else\n"
+      ++ toString' elseStmts (i+1)
+toString' (Assignment var val) i =
+    var ++ " := " ++ Expr.toString val ++ ";\n"
+toString' Skip i = indt i ++ "skip;\n"
+toString' (Block stmts) i = "begin\n" ++ foldl tabAppend "" stmts ++ indt i ++ "end\n"
+    where
+      tabAppend acc stmt = acc ++ indt (i+1) ++ toString' stmt (i+1)
+toString' (While cond stmt) i = indt i ++ "while " ++ Expr.toString cond ++ " do\n" ++ indt (i+1) ++ toString' stmt (i+1)
+toString' (Read str) i = indt i ++ "read " ++ str ++ ";\n"
+toString' (Write expr) i = indt i ++ "write " ++ Expr.toString expr ++ ";\n"
+toString' (Comment c) i = indt i ++ "-- " ++ c ++ "\n"
+
 instance Parse Statement where
   parse = Statement.comment ! assignment ! skip ! block ! ifelse ! whiledo ! Statement.read ! write
-  toString (If cond thenStmts elseStmts) =
-    "if "
-      ++ toString cond
-      ++ " then\n\t"
-      ++ toString thenStmts
-      ++ "else\n\t"
-      ++ toString elseStmts
-  toString (Assignment var val) =
-    var ++ " := " ++ toString val ++ ";\n"
-  toString Skip = "skip;\n"
-  toString (Block stmts) = "begin\n" ++ foldl tabAppend "" stmts ++ "\tend\n"
-    where
-      tabAppend acc stmt = acc ++ "\t\t" ++ toString stmt
-  toString (While cond stmt) = "while " ++ toString cond ++ " do\n\t" ++ toString stmt
-  toString (Read str) = "read " ++ str ++ ";\n"
-  toString (Write expr) = "write " ++ toString expr ++ ";\n"
-  toString (Comment c) = "-- " ++ c ++ "\n"
+  toString = flip toString' 0
