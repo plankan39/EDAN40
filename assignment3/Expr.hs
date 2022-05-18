@@ -44,16 +44,20 @@ term', expr' :: Expr -> Parser Expr
 var = word >-> Var
 num = number >-> Num
 
+mulOp :: Parser (Expr -> Expr -> Expr)
 mulOp =
   lit '*' >-> (\_ -> Mul)
     ! lit '/' >-> (\_ -> Div)
 
+addOp :: Parser (Expr -> Expr -> Expr)
 addOp =
   lit '+' >-> (\_ -> Add)
     ! lit '-' >-> (\_ -> Sub)
 
+expOp :: Parser (Expr -> Expr -> Expr)
 expOp = lit '^' >-> (\_ -> Exp)
 
+bldOp :: t1 -> (t1 -> t2 -> t3, t2) -> t3
 bldOp e (oper, e') = oper e e'
 
 factor =
@@ -62,8 +66,10 @@ factor =
     ! lit '(' -# expr #- lit ')'
     ! err "illegal factor"
 
+exponent' :: Expr -> Parser Expr
 exponent' e = expOp # exponent >-> bldOp e #> exponent' ! return e
 
+exponent :: Parser Expr
 exponent = factor #> exponent'
 
 term' e = mulOp # exponent >-> bldOp e #> term' ! return e
@@ -74,6 +80,7 @@ expr' e = addOp # term >-> bldOp e #> expr' ! return e
 
 expr = term #> expr'
 
+parens :: Bool -> [Char] -> [Char]
 parens cond str = if cond then "(" ++ str ++ ")" else str
 
 shw :: Int -> Expr -> String

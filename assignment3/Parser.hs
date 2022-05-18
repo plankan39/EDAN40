@@ -35,6 +35,7 @@ err message cs = error (message ++ " near " ++ cs ++ "\n")
 iter :: Parser a -> Parser [a]
 iter m = m # iter m >-> cons ! return []
 
+cons :: (a, [a]) -> [a]
 cons (a, b) = a : b
 
 -- | Applies two parsers in sequence, but throws away
