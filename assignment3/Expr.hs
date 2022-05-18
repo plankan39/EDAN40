@@ -1,5 +1,3 @@
-module Expr (Expr, T, parse, fromString, value, toString) where
-
 {-
    An expression of type Expr is a representation of an arithmetic expression
    with integer constants and variables. A variable is a string of upper-
@@ -35,6 +33,7 @@ data Expr
   | Sub Expr Expr
   | Mul Expr Expr
   | Div Expr Expr
+  | Exp Expr Expr
   deriving (Show)
 
 type T = Expr
@@ -51,6 +50,8 @@ mulOp =
 addOp =
   lit '+' >-> (\_ -> Add)
     ! lit '-' >-> (\_ -> Sub)
+
+expOp = lit '^' >-> (\_ -> Exp)
 
 bldOp e (oper, e') = oper e e'
 
@@ -77,6 +78,7 @@ shw prec (Add t u) = parens (prec > 5) (shw 5 t ++ "+" ++ shw 5 u)
 shw prec (Sub t u) = parens (prec > 5) (shw 5 t ++ "-" ++ shw 6 u)
 shw prec (Mul t u) = parens (prec > 6) (shw 6 t ++ "*" ++ shw 6 u)
 shw prec (Div t u) = parens (prec > 6) (shw 6 t ++ "/" ++ shw 7 u)
+shw prec (Exp t u) = parens (prec > 7) (shw 7 t ++ "^" ++ shw 8 u)
 
 -- |
 -- The expression value e dictionary should return the value of e
@@ -103,6 +105,7 @@ value (Div a b) vars =
   where
     x = value a vars
     y = value b vars
+value (Exp a b) vars = value a vars ^ value b vars
 
 instance Parse Expr where
   parse = expr
