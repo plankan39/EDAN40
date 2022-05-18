@@ -1,3 +1,4 @@
+-- EDAN40 A3 Parser by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 module CoreParser
   ( Parser,
     char,

@@ -1,3 +1,4 @@
+-- EDAN40 A3 Parser by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 {-
    An expression of type Expr is a representation of an arithmetic expression
    with integer constants and variables. A variable is a string of upper-

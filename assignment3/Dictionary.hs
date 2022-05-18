@@ -1,4 +1,6 @@
+-- EDAN40 A3 Parser by Emil Eriksson (em5184er-s) && Lukas Elmlund (lu0804el-s)
 module Dictionary (T, empty, lookup, insert) where
+
 import Prelude hiding (lookup)
 import qualified Prelude
 
@@ -11,4 +13,4 @@ lookup :: (Eq a, Ord a) => a -> T a b -> Maybe b
 lookup a (Dictionary dict) = Prelude.lookup a dict
 
 insert :: (Eq a, Ord a) => (a, b) -> T a b -> T a b
-insert pair (Dictionary dict)  = Dictionary (pair:dict)
+insert pair (Dictionary dict) = Dictionary (pair : dict)
