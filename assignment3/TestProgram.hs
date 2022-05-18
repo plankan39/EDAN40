@@ -4,7 +4,7 @@ module TestProgram where
 import qualified Dictionary
 import Program
 
-p0, p1, p2, p3, p4 :: Program.K
+p0, p1, p2, p3, p4, p5 :: Program.K
 p0 =
   fromString
     "\
@@ -73,7 +73,6 @@ s4 =
   "\
   \read a;\
   \read b;\
-  \-- a comment\n\
   \s := 3;\
   \while a do\
   \  begin\
@@ -88,3 +87,14 @@ s4 =
 p4 = fromString s4
 
 rp4 = Program.exec p4 Dictionary.empty [4, 4]
+
+s5 =
+  "\
+  \a := 2;\
+  \b := 3;\
+  \c := a^b^b;\
+  \write c;"
+
+p5 = fromString s5
+
+rp5 = Program.exec p5 Dictionary.empty []
