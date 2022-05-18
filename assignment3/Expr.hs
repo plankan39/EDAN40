@@ -25,7 +25,7 @@ module Expr (Expr, T, parse, fromString, value, toString) where
 
 import qualified Dictionary
 import Parser hiding (T)
-import Prelude hiding (fail, return, exponent)
+import Prelude hiding (exponent, fail, return)
 
 data Expr
   = Num Integer
@@ -62,7 +62,7 @@ factor =
     ! lit '(' -# expr #- lit ')'
     ! err "illegal factor"
 
-exponent' e = expOp # factor >-> bldOp e
+exponent' e = expOp # factor >-> bldOp e #> exponent' ! return e
 
 exponent = factor #> exponent'
 
