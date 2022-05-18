@@ -24,7 +24,7 @@
 
 import qualified Dictionary
 import Parser hiding (T)
-import Prelude hiding (fail, return)
+import Prelude hiding (fail, return, exponent)
 
 data Expr
   = Num Integer
@@ -61,9 +61,13 @@ factor =
     ! lit '(' -# expr #- lit ')'
     ! err "illegal factor"
 
-term' e = mulOp # factor >-> bldOp e #> term' ! return e
+exponent' e = expOp # factor >-> bldOp e #> exponent' ! return e
 
-term = factor #> term'
+exponent = factor #> exponent'
+
+term' e = mulOp # exponent >-> bldOp e #> term' ! return e
+
+term = exponent #> term'
 
 expr' e = addOp # term >-> bldOp e #> expr' ! return e
 
