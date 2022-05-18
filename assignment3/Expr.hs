@@ -56,15 +56,13 @@ expOp = lit '^' >-> (\_ -> Exp)
 
 bldOp e (oper, e') = oper e e'
 
-rbldOp e (oper, e') = oper e' e
-
 factor =
   num
     ! var
     ! lit '(' -# expr #- lit ')'
     ! err "illegal factor"
 
-exponent' e = expOp # factor >-> rbldOp e #> exponent' ! return e
+exponent' e = expOp # factor >-> bldOp e
 
 exponent = factor #> exponent'
 
