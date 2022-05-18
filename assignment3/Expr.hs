@@ -21,6 +21,7 @@
    value e env evaluates e in an environment env that is represented by a
    Dictionary.T Int.
 -}
+module Expr (Expr, T, parse, fromString, value, toString) where
 
 import qualified Dictionary
 import Parser hiding (T)
