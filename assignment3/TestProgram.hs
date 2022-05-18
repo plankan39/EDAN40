@@ -23,6 +23,7 @@ p1 =
   fromString
     "\
     \read n;\
+    \ -- hej\n\
     \read b;\
     \m := 1;\
     \s := 0;\
@@ -41,7 +42,7 @@ p1 =
 s1 =
   "\
   \read n;\
-  \--hejhej\
+  \--hejhej \n\
   \read b;\
   \m := 1;\
   \s := 0;\
