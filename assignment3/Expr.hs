@@ -62,7 +62,7 @@ factor =
     ! lit '(' -# expr #- lit ')'
     ! err "illegal factor"
 
-exponent' e = expOp # factor >-> bldOp e #> exponent' ! return e
+exponent' e = expOp # exponent >-> bldOp e #> exponent' ! return e
 
 exponent = factor #> exponent'
 
